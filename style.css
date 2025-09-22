@@ -4,6 +4,7 @@
 @import url("assets/fonts/eurostile/font.css");
 @import url("assets/fonts/clancy/font.css");
 @import url("assets/fonts/minecraft/font.css");
+@import url("assets/fonts/bauhaus/font.css")
 
 :root {
   --primary: var(--topblurryred);

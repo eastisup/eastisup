@@ -134,12 +134,20 @@
   <meta property="theme-color" content="#e03c31">
   <title>BREACH</title>
 
-  <!-- Optional: head-level preloads (helpful, keep modest) -->
   <link rel="preload" as="image" href="/img/logos/breach-logo.png">
   <link rel="preload" as="image" href="/img/logos/sai-logo.png">
   <link rel="preload" as="image" href="/img/logos/trench-logo.png">
   <link rel="preload" as="image" href="/img/logos/blurryface-logo.png">
   <link rel="preload" as="image" href="/img/logos/bglogo.png">
+
+  <script>
+    (function () {
+      var m = document.cookie.match(/(?:^|;\s*)eastisup_era=([^;]+)/);
+      if (m && m[1]) {
+        window.location.replace("/I-/");
+      }
+    })();
+  </script>
 </head>
 <body>
   <div id="app"></div>
@@ -149,15 +157,25 @@
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
   <script type="text/babel">
+    const COOKIE_NAME = "eastisup_era";
+
+    function setEraCookie(era, days = 365) {
+      const expires = new Date(Date.now() + days * 864e5).toUTCString();
+      document.cookie = `${COOKIE_NAME}=${encodeURIComponent(era)}; Path=/; Expires=${expires}; SameSite=Lax`;
+    }
+
+    function handleEraSelect(era) {
+      try { setEraCookie(era); } catch (e) {}
+    }
+
     const SLIDES = [
-      { href: "/I-",      src: "/img/logos/breach-logo.png", alt: "Clancy - Breach" },
-      { href: "/I-",    src: "/img/logos/sai-logo.png",         alt: "Scaled and Icy" },
-      { href: "/I-",   src: "/img/logos/trench-logo.png",      alt: "Trench" },
-      { href: "/I-",   src: "/img/logos/blurryface-logo.png",  alt: "Blurryface" },
-      { href: "/I-", src: "/img/logos/bglogo.png",           alt: "Vessel" }
+      { era: "breach",     href: "/I-/", src: "/img/logos/breach-logo.png",     alt: "Clancy - Breach" },
+      { era: "sai",        href: "/I-/", src: "/img/logos/sai-logo.png",        alt: "Scaled and Icy" },
+      { era: "trench",     href: "/I-/", src: "/img/logos/trench-logo.png",     alt: "Trench" },
+      { era: "blurryface", href: "/I-/", src: "/img/logos/blurryface-logo.png", alt: "Blurryface" },
+      { era: "vessel",     href: "/I-/", src: "/img/logos/bglogo.png",          alt: "Vessel" }
     ];
 
-    // Average color util (CORS-aware; falls back to white)
     function averageColorFromSrc(src) {
       return new Promise((resolve) => {
         const img = new Image();
@@ -229,10 +247,8 @@
       const [index, setIndex] = React.useState(0);
       const total = slides.length;
 
-      // Refs to <img> nodes for decode()
       const imgRefs = React.useRef([]);
 
-      // Average colors (for controls)
       const [colors, setColors] = React.useState(Array(total).fill({ r: 255, g: 255, b: 255 }));
       React.useEffect(() => {
         let mounted = true;
@@ -249,7 +265,6 @@
       const next = () => goTo(index + 1);
       const prev = () => goTo(index - 1);
 
-      // Keyboard navigation
       React.useEffect(() => {
         const onKey = (e) => {
           if (e.key === "ArrowLeft") prev();
@@ -259,7 +274,6 @@
         return () => window.removeEventListener("keydown", onKey);
       }, [index]);
 
-      // Pre-decode current and nearby images so transitions are instant
       React.useEffect(() => {
         const nearby = [
           index,
@@ -273,7 +287,6 @@
         });
       }, [index, total]);
 
-      // Idle-time preload of all images (gentle)
       React.useEffect(() => {
         const idle = window.requestIdleCallback || (fn => setTimeout(fn, 300));
         const cancel = window.cancelIdleCallback || clearTimeout;
@@ -314,7 +327,15 @@
 
                 return (
                   <section className="slide" key={i} aria-roledescription="slide" aria-label={`Slide ${i+1} of ${total}`}>
-                    <a className="slide-content" href={s.href}>
+                    <a
+                      className="slide-content"
+                      href={s.href}
+                      onMouseDown={() => handleEraSelect(s.era)}  
+                      onClick={() => handleEraSelect(s.era)}      
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") handleEraSelect(s.era);
+                      }}
+                    >
                       <img
                         ref={el => (imgRefs.current[i] = el)}
                         src={s.src}
