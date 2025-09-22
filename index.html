@@ -1,11 +1,15 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <style>
     @import url("https://cdn.eastisup.com/css/reset.css");
     @import url("https://cdn.eastisup.com/fonts/nickel-gothic-compressed.css");
 
-    * { box-sizing: border-box; user-select: none; }
+    * {
+      box-sizing: border-box;
+      user-select: none;
+    }
 
     body {
       margin: 0;
@@ -13,7 +17,7 @@
       color: #fff;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
       min-height: 100vh;
-      overflow: hidden; 
+      overflow: hidden;
     }
 
     .slider-viewport {
@@ -27,8 +31,8 @@
     .slider-track {
       display: flex;
       height: 100%;
-      transform: translate3d(0,0,0);
-      transition: transform 780ms cubic-bezier(.16,.84,.44,1);
+      transform: translate3d(0, 0, 0);
+      transition: transform 780ms cubic-bezier(.16, .84, .44, 1);
       will-change: transform;
     }
 
@@ -39,7 +43,10 @@
       place-items: center;
     }
 
-    :root { --content-size: clamp(280px, 76vmin, 1200px); }
+    :root {
+      --content-size: clamp(280px, 76vmin, 1200px);
+    }
+
     .slide-content {
       width: var(--content-size);
       height: var(--content-size);
@@ -72,18 +79,18 @@
       border-radius: 999px;
       backdrop-filter: blur(6px);
       pointer-events: auto;
-      box-shadow: 0 6px 20px rgba(0,0,0,.45);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, .45);
 
-      background-color: var(--accent-bg, rgba(255,255,255,.12));
-      border: 1px solid var(--accent-border, rgba(255,255,255,.25));
+      background-color: var(--accent-bg, rgba(255, 255, 255, .12));
+      border: 1px solid var(--accent-border, rgba(255, 255, 255, .25));
     }
 
     .arrow {
       width: 42px;
       height: 42px;
       border-radius: 999px;
-      border: 1px solid var(--accent-border, rgba(255,255,255,.4));
-      background: var(--accent-chip, rgba(255,255,255,.14));
+      border: 1px solid var(--accent-border, rgba(255, 255, 255, .4));
+      background: var(--accent-chip, rgba(255, 255, 255, .14));
       color: var(--accent-solid, #fff);
       display: grid;
       place-items: center;
@@ -91,10 +98,24 @@
       outline: none;
       transition: background 160ms ease, border-color 160ms ease, transform 120ms ease, opacity 160ms ease;
     }
-    .arrow:hover { background: var(--accent-chip-hover, rgba(255,255,255,.22)); }
-    .arrow:active { transform: scale(0.96); }
-    .arrow:disabled { opacity: 0.35; cursor: not-allowed; }
-    .arrow svg { width: 18px; height: 18px; }
+
+    .arrow:hover {
+      background: var(--accent-chip-hover, rgba(255, 255, 255, .22));
+    }
+
+    .arrow:active {
+      transform: scale(0.96);
+    }
+
+    .arrow:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    .arrow svg {
+      width: 18px;
+      height: 18px;
+    }
 
     .dots {
       display: inline-flex;
@@ -107,13 +128,17 @@
       width: 9px;
       height: 9px;
       border-radius: 50%;
-      border: 1px solid var(--accent-dot-border, rgba(255,255,255,.45));
-      background: var(--accent-dot, rgba(255,255,255,.25));
+      border: 1px solid var(--accent-dot-border, rgba(255, 255, 255, .45));
+      background: var(--accent-dot, rgba(255, 255, 255, .25));
       cursor: pointer;
       outline: none;
       transition: transform 140ms ease, background 160ms ease, border-color 160ms ease;
     }
-    .dot:hover { transform: scale(1.15); }
+
+    .dot:hover {
+      transform: scale(1.15);
+    }
+
     .dot[aria-selected="true"] {
       background: var(--accent-solid, #fff);
       border-color: var(--accent-solid, #fff);
@@ -121,7 +146,12 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .slider-track, .arrow, .dot { transition: none !important; }
+
+      .slider-track,
+      .arrow,
+      .dot {
+        transition: none !important;
+      }
     }
   </style>
 
@@ -149,6 +179,7 @@
     })();
   </script>
 </head>
+
 <body>
   <div id="app"></div>
 
@@ -165,15 +196,15 @@
     }
 
     function handleEraSelect(era) {
-      try { setEraCookie(era); } catch (e) {}
+      try { setEraCookie(era); } catch (e) { }
     }
 
     const SLIDES = [
-      { era: "breach",     href: "/I-/", src: "/img/logos/breach-logo.png",     alt: "Clancy - Breach" },
-      { era: "sai",        href: "/I-/", src: "/img/logos/sai-logo.png",        alt: "Scaled and Icy" },
-      { era: "trench",     href: "/I-/", src: "/img/logos/trench-logo.png",     alt: "Trench" },
+      { era: "breach", href: "/I-/", src: "/img/logos/breach-logo.png", alt: "Clancy - Breach" },
+      { era: "sai", href: "/I-/", src: "/img/logos/sai-logo.png", alt: "Scaled and Icy" },
+      { era: "trench", href: "/I-/", src: "/img/logos/trench-logo.png", alt: "Trench" },
       { era: "blurryface", href: "/I-/", src: "/img/logos/blurryface-logo.png", alt: "Blurryface" },
-      { era: "vessel",     href: "/I-/", src: "/img/logos/bglogo.png",          alt: "Vessel" }
+      { era: "vessel", href: "/I-/", src: "/img/logos/bglogo.png", alt: "Vessel" }
     ];
 
     function averageColorFromSrc(src) {
@@ -189,13 +220,13 @@
             const ctx = canvas.getContext("2d", { willReadFrequently: true });
             ctx.drawImage(img, 0, 0, w, h);
             const { data } = ctx.getImageData(0, 0, w, h);
-            let r=0, g=0, b=0, n=0;
-            for (let i=0; i<data.length; i+=4) {
-              const a = data[i+3];
-              if (a > 0) { r += data[i]; g += data[i+1]; b += data[i+2]; n++; }
+            let r = 0, g = 0, b = 0, n = 0;
+            for (let i = 0; i < data.length; i += 4) {
+              const a = data[i + 3];
+              if (a > 0) { r += data[i]; g += data[i + 1]; b += data[i + 2]; n++; }
             }
             if (!n) throw new Error("no pixels");
-            resolve({ r: Math.round(r/n), g: Math.round(g/n), b: Math.round(b/n) });
+            resolve({ r: Math.round(r / n), g: Math.round(g / n), b: Math.round(b / n) });
           } catch {
             resolve({ r: 255, g: 255, b: 255 });
           }
@@ -204,20 +235,20 @@
       });
     }
 
-    const toRGB = ({r,g,b}) => `rgb(${r} ${g} ${b})`;
-    const toRGBA = ({r,g,b}, a) => `rgba(${r}, ${g}, ${b}, ${a})`;
+    const toRGB = ({ r, g, b }) => `rgb(${r} ${g} ${b})`;
+    const toRGBA = ({ r, g, b }, a) => `rgba(${r}, ${g}, ${b}, ${a})`;
 
     function Arrow({ dir, onClick, disabled }) {
       return (
         <button className="arrow" type="button" aria-label={dir === "prev" ? "Previous" : "Next"} onClick={onClick} disabled={disabled}>
           {dir === "prev" ? (
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
-                 strokeLinecap="round" strokeLinejoin="round">
+              strokeLinecap="round" strokeLinejoin="round">
               <polyline points="15 18 9 12 15 6"></polyline>
             </svg>
           ) : (
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
-                 strokeLinecap="round" strokeLinejoin="round">
+              strokeLinecap="round" strokeLinejoin="round">
               <polyline points="9 18 15 12 9 6"></polyline>
             </svg>
           )}
@@ -283,7 +314,7 @@
         ];
         nearby.forEach(i => {
           const el = imgRefs.current[i];
-          if (el?.decode) el.decode().catch(() => {});
+          if (el?.decode) el.decode().catch(() => { });
         });
       }, [index, total]);
 
@@ -326,12 +357,12 @@
                 const priority = (isCurrent || isNext) ? "high" : "low";
 
                 return (
-                  <section className="slide" key={i} aria-roledescription="slide" aria-label={`Slide ${i+1} of ${total}`}>
+                  <section className="slide" key={i} aria-roledescription="slide" aria-label={`Slide ${i + 1} of ${total}`}>
                     <a
                       className="slide-content"
                       href={s.href}
-                      onMouseDown={() => handleEraSelect(s.era)}  
-                      onClick={() => handleEraSelect(s.era)}      
+                      onMouseDown={() => handleEraSelect(s.era)}
+                      onClick={() => handleEraSelect(s.era)}
                       onKeyDown={(e) => {
                         if (e.key === "Enter" || e.key === " ") handleEraSelect(s.era);
                       }}
@@ -339,7 +370,7 @@
                       <img
                         ref={el => (imgRefs.current[i] = el)}
                         src={s.src}
-                        alt={s.alt || `Slide ${i+1}`}
+                        alt={s.alt || `Slide ${i + 1}`}
                         draggable="false"
                         decoding="async"
                         loading={eager ? "eager" : "lazy"}
@@ -379,4 +410,5 @@
     root.render(<Carousel slides={SLIDES} loop={false} />);
   </script>
 </body>
+
 </html>
