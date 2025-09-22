@@ -11,7 +11,8 @@
     html[data-era="trench"]    { --primary: #FCE300; }
     html[data-era="breach"]    { --primary: #E03C31; }
     html[data-era="vessel"]    { --primary: #C2D2DF; }
-    html[data-era="blurryface"]{ --primary: var(--topblurryred); }
+    html[data-era="blurryface"]{ --primary: var(--topblurryred); }#eraTitle { text-transform: none; }
+    
 
     .menu { width: 590px; display: flex; flex-direction: column; align-items: flex-start; }
     #eraTitle { width: 100%; text-align: left; margin: 0 0 8px 0; padding: 0; line-height: 1.08; }
@@ -63,11 +64,11 @@
     .exit-tape .glyph { display: inline-block; margin-right: 8px; color: var(--primary); filter: drop-shadow(0 1px 0 rgba(0,0,0,.2)); }
     .exit-tape.holding { border-style: solid; }
 
-    html[data-era="sai"] h1        { font-family: "Eurostile"; letter-spacing: 10px; }
-    html[data-era="trench"] h1     { font-family: "Futura Light"; letter-spacing: 8px; }
+    html[data-era="sai"] h1        { font-family: "Bauhaus"; letter-spacing: 10px; }
+    html[data-era="trench"] h1     { font-family: "Eurostile Bold"; letter-spacing: 8px; }
     html[data-era="breach"] h1     { font-family: "Clancy"; letter-spacing: 6px; }
-    html[data-era="blurryface"] h1 { font-family: "Clancy"; letter-spacing: 6px; }
-    html[data-era="vessel"] h1     { font-family: "Futura Light"; letter-spacing: 7px; }
+    html[data-era="blurryface"] h1 { font-family: "Futura Light"; letter-spacing: 6px; }
+    html[data-era="vessel"] h1     { font-family: "Courier New"; letter-spacing: 1px; }
   </style>
 
   <link rel="shortcut icon" href="/img/icon.png" type="image/x-icon" />
@@ -118,7 +119,7 @@
         sai:        { title: "GOOD DAY DEMA" },
         trench:     { title: "EAST IS UP" },
         blurryface: { title: "THE FEW, THE PROUD AND THE EMOTIONAL" },
-        vessel:     { title: "ISLANDS OF VIOLENCE" }
+        vessel:     { title: "islands of violence"}
       };
 
       var ERA_THEME = {
