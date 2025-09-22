@@ -3,8 +3,8 @@
 @import url("assets/fonts/futura/font.css");
 @import url("assets/fonts/eurostile/font.css");
 @import url("assets/fonts/clancy/font.css");
+@import url("assets/fonts/bauhaus/font.css");
 @import url("assets/fonts/minecraft/font.css");
-@import url("assets/fonts/bauhaus/font.css")
 
 :root {
   --primary: var(--topblurryred);
@@ -56,7 +56,6 @@ a {
   width: 25vw;
   user-select: none;
   pointer-events: none;
-  /* filter: hue-rotate(56deg) brightness(180%); */
 }
 
 .links {
@@ -70,7 +69,6 @@ a {
 
 .content {
   height: 50vh;
-  /* margin-top: 50vh; */
   width: 640px;
   padding: 12px;
   border-radius: 12px 12px 0 0;
