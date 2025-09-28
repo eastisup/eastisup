@@ -37,7 +37,8 @@
 
     .empty { opacity: .7; font-size: 16px; margin-top: 8px; }
 
-    .back-tape {
+    .exit-tape {
+      --p: 0;
       position: fixed;
       bottom: 18px;
       left: 18px;
@@ -51,19 +52,37 @@
       font-family: "Eurostile", system-ui, sans-serif;
       text-transform: uppercase;
       transform: rotate(-3deg);
+      cursor: pointer;
       user-select: none;
       -webkit-user-select: none;
-      touch-action: manipulation;
+      touch-action: none;
       outline: none;
       z-index: 1000;
       backdrop-filter: blur(4px);
       box-shadow: 0 6px 20px rgba(0,0,0,.38);
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
     }
-    .back-tape .glyph { color: var(--primary); filter: drop-shadow(0 1px 0 rgba(0,0,0,.2)); }
+    .exit-tape::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(135deg, rgba(255,255,255,0.05) 0 6px, rgba(255,255,255,0.02) 6px 12px);
+      border-radius: 6px;
+      pointer-events: none;
+    }
+    .exit-tape::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: var(--primary);
+      opacity: 0.18;
+      transform-origin: left center;
+      transform: scaleX(var(--p));
+      transition: transform 60ms linear;
+      border-radius: 6px;
+      pointer-events: none;
+    }
+    .exit-tape .glyph { display: inline-block; margin-right: 8px; color: var(--primary); filter: drop-shadow(0 1px 0 rgba(0,0,0,.2)); }
+    .exit-tape.holding { border-style: solid; }
   </style>
   <script>
     (function () {
@@ -79,7 +98,9 @@
   <img src="/img/tape/Tape (2).webp" class="tape" style="bottom: 0; right: 0; position: fixed; width: 25vw; pointer-events: none;" />
   <div class="bg"></div>
 
-  <a class="back-tape" href="/I-/" aria-label="Back to main menu"><span class="glyph">⟵</span> MENU</a>
+  <div class="exit-tape" id="menuTape" role="button" tabindex="0" aria-label="Hold to open menu">
+    <span class="glyph">⤺</span> MENU
+  </div>
 
   <div class="page">
     <div class="container">
@@ -142,47 +163,82 @@
 
       if (!list.length) {
         empty.style.display = "block";
-        return;
+      } else {
+        list.forEach(function (entry) {
+          var data = typeof entry === "string" ? { src: entry } : entry;
+          var item = document.createElement("div");
+          item.className = "item";
+
+          var a = document.createElement("a");
+          a.href = data.src;
+          a.target = "_blank";
+          a.rel = "noopener";
+          a.download = "";
+          var img = document.createElement("img");
+          img.loading = "lazy";
+          img.decoding = "async";
+          img.src = data.src;
+          img.alt = data.src.split("/").pop();
+          a.appendChild(img);
+          item.appendChild(a);
+
+          if (data.credit || data.author || data.by) {
+            var creditText = data.credit || data.author || data.by;
+            var credit = document.createElement("div");
+            credit.className = "credit";
+            if (data.link) {
+              var link = document.createElement("a");
+              link.href = data.link;
+              link.target = "_blank";
+              link.rel = "noopener";
+              link.textContent = creditText;
+              credit.appendChild(document.createTextNode("by "));
+              credit.appendChild(link);
+            } else {
+              credit.textContent = "by " + creditText;
+            }
+            item.appendChild(credit);
+          }
+
+          grid.appendChild(item);
+        });
       }
 
-      list.forEach(function (entry) {
-        var data = typeof entry === "string" ? { src: entry } : entry;
-        var item = document.createElement("div");
-        item.className = "item";
-
-        var a = document.createElement("a");
-        a.href = data.src;
-        a.target = "_blank";
-        a.rel = "noopener";
-        a.download = "";
-        var img = document.createElement("img");
-        img.loading = "lazy";
-        img.decoding = "async";
-        img.src = data.src;
-        img.alt = data.src.split("/").pop();
-        a.appendChild(img);
-        item.appendChild(a);
-
-        if (data.credit || data.author || data.by) {
-          var creditText = data.credit || data.author || data.by;
-          var credit = document.createElement("div");
-          credit.className = "credit";
-          if (data.link) {
-            var link = document.createElement("a");
-            link.href = data.link;
-            link.target = "_blank";
-            link.rel = "noopener";
-            link.textContent = creditText;
-            credit.appendChild(document.createTextNode("by "));
-            credit.appendChild(link);
-          } else {
-            credit.textContent = "by " + creditText;
+      (function () {
+        var el = document.getElementById("menuTape");
+        if (!el) return;
+        var holdMs = 1100, raf = 0, start = 0, going = false;
+        function update(t) {
+          var p = Math.min((t - start) / holdMs, 1);
+          el.style.setProperty("--p", p.toFixed(3));
+          if (p >= 1 && !going) {
+            going = true;
+            window.location.replace("/I-/");
+            return;
           }
-          item.appendChild(credit);
+          raf = requestAnimationFrame(update);
         }
-
-        grid.appendChild(item);
-      });
+        function startHold(e) {
+          e.preventDefault();
+          if (going) return;
+          el.classList.add("holding");
+          start = performance.now();
+          cancelAnimationFrame(raf);
+          raf = requestAnimationFrame(update);
+        }
+        function cancelHold() {
+          if (going) return;
+          el.classList.remove("holding");
+          el.style.setProperty("--p", 0);
+          cancelAnimationFrame(raf);
+        }
+        el.addEventListener("pointerdown", startHold);
+        window.addEventListener("pointerup", cancelHold);
+        window.addEventListener("pointercancel", cancelHold);
+        window.addEventListener("blur", cancelHold);
+        el.addEventListener("keydown", function (e) { if (e.key === " " || e.key === "Enter") startHold(e); });
+        el.addEventListener("keyup", function () { cancelHold(); });
+      })();
     })();
   </script>
 </body>
