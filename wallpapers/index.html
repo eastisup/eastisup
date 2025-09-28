@@ -1,16 +1,153 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="/img/logos/breach-logo-128.png" type="image/x-icon">
-    <title>Wallpapers</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="shortcut icon" href="/img/icon.png" type="image/x-icon" />
+  <title>Wallpapers</title>
+  <link rel="stylesheet" href="../style.css" />
+  <style>
+    html[data-era="sai"]       { --primary: #53B6CB; }
+    html[data-era="trench"]    { --primary: #FCE300; }
+    html[data-era="breach"]    { --primary: #E03C31; }
+    html[data-era="vessel"]    { --primary: #C2D2DF; }
+    html[data-era="blurryface"]{ --primary: var(--topblurryred); }
+
+    .tape { z-index: 0; }
+    .page { position: relative; z-index: 1; }
+
+    .page { min-height: 100vh; padding: 56px 0 40px; }
+    .container { width: min(1100px, 92vw); margin: 0 auto; }
+
+    #title { margin: 0 0 16px 0; text-align: left; line-height: 1.06; text-transform: uppercase; }
+    html[data-era="sai"] #title        { font-family: "Eurostile"; letter-spacing: 10px; }
+    html[data-era="trench"] #title     { font-family: "Futura Light"; letter-spacing: 8px; }
+    html[data-era="breach"] #title     { font-family: "Clancy"; letter-spacing: 6px; }
+    html[data-era="blurryface"] #title { font-family: "Clancy"; letter-spacing: 6px; }
+    html[data-era="vessel"] #title     { font-family: "Futura Light"; letter-spacing: 7px; text-transform: none; }
+
+    .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+    .item { display: flex; flex-direction: column; gap: 6px; }
+    .item a { display: block; border-radius: 12px; overflow: hidden; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 6px 18px rgba(0,0,0,.28); }
+    .item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    .credit { font-size: 12px; color: rgba(255,255,255,.85); letter-spacing: 1px; }
+    .credit a { color: var(--primary); text-decoration: none; border-bottom: 1px dotted rgba(255,255,255,0.25); }
+    .credit a:hover { border-bottom-color: rgba(255,255,255,0.5); }
+
+    .empty { opacity: .7; font-size: 16px; margin-top: 8px; }
+  </style>
+  <script>
+    (function () {
+      var m = document.cookie.match(/(?:^|;\s*)eastisup_era=([^;]+)/);
+      if (!m || !m[1]) { window.location.replace("/"); return; }
+      var era = decodeURIComponent(m[1]);
+      document.documentElement.setAttribute("data-era", era);
+    })();
+  </script>
 </head>
-
 <body>
-    <img src="/img/wallpapers/breach-portrait.png" class="wallpaper">
-    <img src="/img/wallpapers/clancy-fellas.png" class="wallpaper">
-</body>
+  <img src="/img/tape/Tape (3).webp" class="tape" style="top: 0; left: 0; position: fixed; width: 25vw; pointer-events: none;" />
+  <img src="/img/tape/Tape (2).webp" class="tape" style="bottom: 0; right: 0; position: fixed; width: 25vw; pointer-events: none;" />
+  <div class="bg"></div>
 
+  <div class="page">
+    <div class="container">
+      <h1 id="title">Wallpapers</h1>
+      <div id="gallery" class="gallery"></div>
+      <p id="empty" class="empty" style="display:none">No wallpapers yet for this era.</p>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var m = document.cookie.match(/(?:^|;\s*)eastisup_era=([^;]+)/);
+      var era = m ? decodeURIComponent(m[1]) : null;
+
+      var ERA_THEME = {
+        breach: "#E03C31",
+        sai: "#53B6CB",
+        trench: "#FCE300",
+        blurryface: "#E03C31",
+        vessel: "#C2D2DF"
+      };
+
+      var meta = document.querySelector('meta[name="theme-color"]');
+      if (meta && era && ERA_THEME[era]) meta.setAttribute("content", ERA_THEME[era]);
+
+      var tapes = {
+        breach:     { tl: "/img/tape/breach-top.webp",     br: "/img/tape/breach-bottom.webp" },
+        sai:        { tl: "/img/tape/sai-top.webp",        br: "/img/tape/sai-bottom.webp" },
+        trench:     { tl: "/img/tape/trench-top.webp",     br: "/img/tape/trench-bottom.webp" },
+        blurryface: { tl: "/img/tape/blurryface-top.webp", br: "/img/tape/blurryface-bottom.webp" },
+        vessel:     { tl: "/img/tape/vessel-top.webp",     br: "/img/tape/vessel-bottom.webp" }
+      };
+      var map = tapes[era];
+      if (map) {
+        var imgs = document.querySelectorAll("img.tape");
+        if (imgs[0]) imgs[0].src = map.tl;
+        if (imgs[1]) imgs[1].src = map.br;
+      }
+
+      var WALLPAPERS = {
+        breach: [
+          { src: "/img/wallpapers/breach-portrait.png", credit: "@clancy", link: "https://example.com/clancy" },
+          { src: "/img/wallpapers/clancy-fellas.png", credit: "Fellas" }
+        ],
+        sai: [],
+        trench: [],
+        blurryface: [],
+        vessel: []
+      };
+
+      var list = WALLPAPERS[era] || [];
+      var grid = document.getElementById("gallery");
+      var empty = document.getElementById("empty");
+
+      if (!list.length) {
+        empty.style.display = "block";
+        return;
+      }
+
+      list.forEach(function (entry) {
+        var data = typeof entry === "string" ? { src: entry } : entry;
+        var item = document.createElement("div");
+        item.className = "item";
+
+        var a = document.createElement("a");
+        a.href = data.src;
+        a.target = "_blank";
+        a.rel = "noopener";
+        a.download = "";
+        var img = document.createElement("img");
+        img.loading = "lazy";
+        img.decoding = "async";
+        img.src = data.src;
+        img.alt = data.src.split("/").pop();
+        a.appendChild(img);
+        item.appendChild(a);
+
+        if (data.credit || data.author || data.by) {
+          var creditText = data.credit || data.author || data.by;
+          var credit = document.createElement("div");
+          credit.className = "credit";
+          if (data.link) {
+            var link = document.createElement("a");
+            link.href = data.link;
+            link.target = "_blank";
+            link.rel = "noopener";
+            link.textContent = creditText;
+            credit.appendChild(document.createTextNode("by "));
+            credit.appendChild(link);
+          } else {
+            credit.textContent = "by " + creditText;
+          }
+          item.appendChild(credit);
+        }
+
+        grid.appendChild(item);
+      });
+    })();
+  </script>
+</body>
 </html>
