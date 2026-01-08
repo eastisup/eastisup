@@ -1,14 +1,48 @@
+/**
+ * Optimized tooltip system with RAF batching and single mousemove handler
+ * Replaces 4 separate handlers with consolidated approach
+ */
+
+// Single mousemove handler with RAF batching for all tooltips
+let rafId = null;
+let mouseX = 0;
+let mouseY = 0;
+
 document.addEventListener("mousemove", (event) => {
-  const followerDiv = document.getElementById("information-tooltip");
-  followerDiv.style.left = event.clientX + "px";
-  followerDiv.style.top = event.clientY + "px";
+  mouseX = event.clientX;
+  mouseY = event.clientY;
+
+  // Only schedule RAF update if not already scheduled
+  if (!rafId) {
+    rafId = requestAnimationFrame(() => {
+      // Find any visible tooltip and update its position
+      const visibleTooltip = document.querySelector('.tooltip[style*="display: block"]');
+      if (visibleTooltip) {
+        visibleTooltip.style.transform = `translate(${mouseX}px, ${mouseY}px)`;
+      }
+      rafId = null;
+    });
+  }
 });
 
-document.addEventListener("DOMContentLoaded", () => {
-  const bureauElements = document.querySelectorAll(".information");
-  const tooltip = document.getElementById("information-tooltip");
+/**
+ * Setup tooltip show/hide for a specific trigger class
+ * @param {string} triggerClass - CSS class for elements that trigger the tooltip
+ * @param {string} tooltipId - ID of the tooltip element to show/hide
+ */
+function setupTooltip(triggerClass, tooltipId) {
+  const tooltip = document.getElementById(tooltipId);
+  if (!tooltip) return;
 
-  bureauElements.forEach((element) => {
+  // Initialize tooltip position styles
+  tooltip.style.position = 'fixed';
+  tooltip.style.pointerEvents = 'none';
+  tooltip.style.left = '0';
+  tooltip.style.top = '0';
+
+  const triggerElements = document.querySelectorAll(`.${triggerClass}`);
+
+  triggerElements.forEach((element) => {
     element.addEventListener("mouseenter", () => {
       tooltip.style.display = "block";
     });
@@ -17,71 +51,12 @@ document.addEventListener("DOMContentLoaded", () => {
       tooltip.style.display = "none";
     });
   });
-});
-// INFORMATION button
+}
 
-document.addEventListener("mousemove", (event) => {
-  const followerDiv = document.getElementById("discord-tooltip");
-  followerDiv.style.left = event.clientX + "px";
-  followerDiv.style.top = event.clientY + "px";
-});
-
+// Setup all tooltips when DOM is ready
 document.addEventListener("DOMContentLoaded", () => {
-  const bureauElements = document.querySelectorAll(".discord");
-  const tooltip = document.getElementById("discord-tooltip");
-
-  bureauElements.forEach((element) => {
-    element.addEventListener("mouseenter", () => {
-      tooltip.style.display = "block";
-    });
-
-    element.addEventListener("mouseleave", () => {
-      tooltip.style.display = "none";
-    });
-  });
+  setupTooltip("information", "information-tooltip");
+  setupTooltip("discord", "discord-tooltip");
+  setupTooltip("banditos", "banditos-tooltip");
+  setupTooltip("dema", "dema-tooltip");
 });
-// DISCORD button
-
-document.addEventListener("mousemove", (event) => {
-  const followerDiv = document.getElementById("banditos-tooltip");
-  followerDiv.style.left = event.clientX + "px";
-  followerDiv.style.top = event.clientY + "px";
-});
-
-document.addEventListener("DOMContentLoaded", () => {
-  const bureauElements = document.querySelectorAll(".banditos");
-  const tooltip = document.getElementById("banditos-tooltip");
-
-  bureauElements.forEach((element) => {
-    element.addEventListener("mouseenter", () => {
-      tooltip.style.display = "block";
-    });
-
-    element.addEventListener("mouseleave", () => {
-      tooltip.style.display = "none";
-    });
-  });
-});
-// Banditos
-
-document.addEventListener("mousemove", (event) => {
-  const followerDiv = document.getElementById("dema-tooltip");
-  followerDiv.style.left = event.clientX + "px";
-  followerDiv.style.top = event.clientY + "px";
-});
-
-document.addEventListener("DOMContentLoaded", () => {
-  const bureauElements = document.querySelectorAll(".dema");
-  const tooltip = document.getElementById("dema-tooltip");
-
-  bureauElements.forEach((element) => {
-    element.addEventListener("mouseenter", () => {
-      tooltip.style.display = "block";
-    });
-
-    element.addEventListener("mouseleave", () => {
-      tooltip.style.display = "none";
-    });
-  });
-});
-// Dema

@@ -7,5 +7,5 @@ fetch("/js/motd.json")
     randomMessage = text[Math.floor(Math.random() * text.length)];
 
     const randomDiv = document.getElementById("random");
-    randomDiv.innerHTML = randomMessage;
+    randomDiv.textContent = randomMessage;
   });

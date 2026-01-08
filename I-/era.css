@@ -1,0 +1,111 @@
+/* Era-specific styling */
+html[data-era="sai"] { --primary: #53B6CB; }
+html[data-era="trench"] { --primary: #FCE300; }
+html[data-era="breach"] { --primary: #E03C31; }
+html[data-era="vessel"] { --primary: #C2D2DF; }
+html[data-era="blurryface"] { --primary: var(--topblurryred); }
+
+#eraTitle { text-transform: none; }
+
+.menu {
+  width: 590px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+#eraTitle {
+  width: 100%;
+  text-align: left;
+  margin: 0 0 8px 0;
+  padding: 0;
+  line-height: 1.08;
+}
+
+.exit-tape {
+  --p: 0;
+  position: fixed;
+  bottom: 18px;
+  left: 18px;
+  padding: 8px 14px 9px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px dashed rgba(255, 255, 255, 0.35);
+  color: #fff;
+  letter-spacing: 4px;
+  font-size: 14px;
+  font-family: "Eurostile", system-ui, sans-serif;
+  text-transform: uppercase;
+  transform: rotate(-3deg);
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+  outline: none;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.38);
+}
+
+.exit-tape::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.05) 0 6px,
+    rgba(255, 255, 255, 0.02) 6px 12px
+  );
+  border-radius: 6px;
+  pointer-events: none;
+}
+
+.exit-tape::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--primary);
+  opacity: 0.18;
+  transform-origin: left center;
+  transform: scaleX(var(--p));
+  transition: transform 60ms linear;
+  border-radius: 6px;
+  pointer-events: none;
+}
+
+.exit-tape .glyph {
+  display: inline-block;
+  margin-right: 8px;
+  color: var(--primary);
+  filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.2));
+}
+
+.exit-tape.holding {
+  border-style: solid;
+}
+
+html[data-era="sai"] h1 {
+  font-family: "Bauhaus";
+  letter-spacing: 4px;
+}
+
+html[data-era="trench"] h1 {
+  font-family: "Eurostile Bold";
+  letter-spacing: 8px;
+}
+
+html[data-era="breach"] h1 {
+  font-family: "Clancy";
+  letter-spacing: 6px;
+}
+
+html[data-era="blurryface"] h1 {
+  font-family: "Futura Light";
+  letter-spacing: 6px;
+}
+
+html[data-era="vessel"] h1 {
+  font-family: "Courier New";
+  letter-spacing: 1px;
+  text-transform: none;
+}
