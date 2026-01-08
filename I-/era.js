@@ -9,7 +9,7 @@
   const COOKIE_NAME = "eastisup_era";
 
   function clearEraCookie() {
-    document.cookie = `${COOKIE_NAME}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax`;
+    document.cookie = `${COOKIE_NAME}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax; Secure`;
   }
 
   const ERA_COPY = {

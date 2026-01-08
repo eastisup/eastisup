@@ -12,7 +12,7 @@
 
   function setEraCookie(era, days = 365) {
     const expires = new Date(Date.now() + days * 864e5).toUTCString();
-    document.cookie = `${COOKIE_NAME}=${encodeURIComponent(era)}; Path=/; Expires=${expires}; SameSite=Lax`;
+    document.cookie = `${COOKIE_NAME}=${encodeURIComponent(era)}; Path=/; Expires=${expires}; SameSite=Lax; Secure`;
   }
 
   function handleEraSelect(era) {
